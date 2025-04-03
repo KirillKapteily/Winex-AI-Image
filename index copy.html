@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генерация картинок</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            border: 2px solid black;
+            background-color: white;
+        }
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <div class="buttons">
+        <button onclick="generateImage()">Создать изображение</button>
+        <button onclick="saveImage()">Сохранить изображение</button>
+    </div>
+
+    <script>
+        function generateImage() {
+            const canvas = document.getElementById("canvas");
+            const ctx = canvas.getContext("2d");
+
+            // Очистка холста
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Количество случайных фигур
+            const shapesCount = Math.floor(Math.random() * 10) + 5;
+
+            for (let i = 0; i < shapesCount; i++) {
+                const shapeType = Math.floor(Math.random() * 3); // 0 - круг, 1 - квадрат, 2 - линия
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const size = Math.random() * 100 + 20;
+                const color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+
+                ctx.fillStyle = color;
+                ctx.strokeStyle = color;
+                ctx.lineWidth = Math.random() * 5 + 1;
+
+                if (shapeType === 0) {
+                    // Рисуем круг
+                    ctx.beginPath();
+                    ctx.arc(x, y, size / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (shapeType === 1) {
+                    // Рисуем квадрат
+                    ctx.fillRect(x, y, size, size);
+                } else {
+                    // Рисуем линию
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + size, y + size);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function saveImage() {
+            const canvas = document.getElementById("canvas");
+            const image = canvas.toDataURL("image/png"); // Получаем данные изображения в формате PNG
+
+            const link = document.createElement("a");
+            link.href = image;
+            link.download = "generated-image.png"; // Имя файла
+            link.click(); // Автоматически нажимаем на ссылку для скачивания
+        }
+
+        // Генерация при загрузке страницы
+        generateImage();
+    </script>
+
+</body>
+</html>
